@@ -168,7 +168,8 @@ index 629f6b7..be836b4 100644
 | `--soft`|回到上个版本的暂存区<br>(`add`之后,`commit`之前) | 
 | `--hard` | 回到上个版本的文件未修改状态<br>(压根没修改) |
 
-![alt text](images/img1.png)`reset`之后
+![alt text](images/img1.png)
+`reset`之后
 ![alt text](images/img2.png)
 `git reflog`: 记录每一次命令
 ```bash
@@ -551,9 +552,9 @@ pick e0f541f hello.py set exit=1
 
 **推送**,需要把先前讲的`git push origin master`中的`origin`给换成想要推送到的远程库`<name>`
 
-#### 九. 自定义Git
+### 九. 自定义Git
 
-##### 配置`.gitignore`
+#### 配置`.gitignore`
 在git工作区的根目录下创建一个`.gitignore`文件,可不要忽略的文件名填进去(使用通配符),Git会自动忽略这些文件,这样在`git status`的`Untracked files`中也不会显示这些文件
 ![alt text](images/img11.png)
 
@@ -606,3 +607,57 @@ Use -f if you really want to add them.
 2. 也可以修改`.gitignore`:
     - 可以把`*.py[cod]`这一行删了,但影响较大
     - 可以添加`!.haha.pyc`来把该文件作为例外
+
+#### 配置命令别名`alias`
+为了简写一些比较长的命令,可以用类似`git config --global alias.st status`的指令进行配置,这样就可以用`git st`来代替`git status`在命令行键入
+这里的`--global`是全局参数,表示该台电脑(该用户)上的所有仓库都生效,**若没有则只对当前仓库有效**
+
+一些例子:
+```bash
+$ git config --global alias.co checkout
+$ git config --global alias.ci commit
+$ git config --global alias.br branch
+$ git config --global alias.unstage 'reset HEAD'
+```
+命令`git reset HEAD <file>`可以把暂存区的修改撤销掉(unstage),因此可以用`git unstage <file>`
+
+甚至还有:
+```bash
+git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+```
+这样简单的`git lg`就能很漂亮的显示出**提交图**
+
+#### git配置文件
+每个仓库的Git配置文件都放在了`.git/config`文件中 全局配置在用户主目录下`~/.gitconfig`下
+```bash
+$ cat .git/config 
+[core]
+    repositoryformatversion = 0
+    filemode = false
+    bare = false
+    logallrefupdates = true
+    symlinks = false
+    ignorecase = true
+[remote "origin"]
+    url = git@github.com:long6177/learn_git.git
+    fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "dev"]
+    remote = origin
+    merge = refs/heads/dev
+    vscode-merge-base = origin/master
+[branch "master"]
+    vscode-merge-base = origin/master
+    remote = origin
+    merge = refs/heads/master
+[alias]
+    last = log -1`
+```
+
+#### 搭建Git服务器
+详见[廖雪峰教程](https://liaoxuefeng.com/books/git/customize/server/index.html)
+
+### 十. 可视化git管理--GUI工具
+**当我们对Git的提交、分支已经非常熟悉**，可以熟练使用命令操作Git后，再使用GUI工具，就可以更高效。
+
+Git有很多图形界面工具，这里我们推荐**SourceTree**，它是由Atlassian开发的免费Git图形界面工具，可以操作任何Git库。
+
