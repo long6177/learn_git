@@ -1,0 +1,33 @@
+# Python 相关
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# 编辑器 / IDE
+.vscode/
+.idea/
+
+# 操作系统文件
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# 日志 / 临时文件
+*.log
+*.tmp
+*.swp
+
+# （可选）自动生成的输出目录
+# 如果以后有程序生成图片、模型、结果，建议放到 outputs/
+outputs/
