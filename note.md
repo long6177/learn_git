@@ -37,7 +37,7 @@
 `mv oldname.py newname.py`
 `mv a.py ../temp`
 
-##### 重要补充点
+##### 重要补充点`git mv`
 **在git的工作区对被跟踪的的文件(夹)进行删除`rm`或者重命名`mv`时,要是用`git rm`和`git mv`**,这样进行之后,git会自动把变化更新到stage暂存区
 
 #### `echo`和`find`
@@ -168,8 +168,8 @@ index 629f6b7..be836b4 100644
 | `--soft`|回到上个版本的暂存区<br>(`add`之后,`commit`之前) | 
 | `--hard` | 回到上个版本的文件未修改状态<br>(压根没修改) |
 
-![alt text](img1.png)`reset`之后
-![alt text](img2.png)
+![alt text](images/img1.png)`reset`之后
+![alt text](images/img2.png)
 `git reflog`: 记录每一次命令
 ```bash
 long@LAPTOP-P0JHDVD6 MINGW64 /d/long_git/learn_git (master)     
@@ -188,7 +188,7 @@ flowchart LR
     B -- git commit--> C(提交历史)
 ```
 
-![alt text](img3.png)**工作区**就是文件夹页面
+![alt text](images/img3.png)**工作区**就是文件夹页面
 **版本库(Repository)**是在`git init`之后创建的,用`.git`来表示
 版本库中存在一个**缓存区(stage)**
 `commit`只会**关注缓存区的情况**,若未`add`便开始`commit`则在工作区的变化不会被提交
@@ -273,7 +273,7 @@ SSH的**核心**是: **密钥对**
 - `-b`表示创建新分支并转换到该分支
 - 相当于两步`git branch dev` + `git checkout dev`
 
-![alt text](img4.png) 
+![alt text](images/img4.png) 
 #### 合并分支
 **切换分支**: `git checkout master` 切换到`master`分支
 
@@ -289,7 +289,7 @@ SSH的**核心**是: **密钥对**
 
 #### 合并冲突(merge conflict)
 当出现如下分支时,`git merge <branch>`无法快速合并(**fast merge**)
-![alt text](img5.png)`git merge feature1`后,git后说出`merge conflict`,之后使用`git status`可以查看冲突的文件
+![alt text](images/img5.png)`git merge feature1`后,git后说出`merge conflict`,之后使用`git status`可以查看冲突的文件
 ```bash
 $ git merge feature1
 Auto-merging readme.txt
@@ -312,7 +312,7 @@ Creating a new branch is quick AND simple.
 ```
 
 这时我们要手动修改来解决冲突,之后进行`git add readme.txt` + `git commmit -m "confllict fixed"`,此时分支就变成了
-![alt text](img6.png)
+![alt text](images/img6.png)
 然后查看`git log`
 ```bash
 long@LAPTOP-P0JHDVD6 MINGW64 /d/long_git/learn_git (master)     
@@ -349,9 +349,9 @@ $ git log --graph --pretty=oneline --abbrev-commit
 - `--no-ff`: 表示禁用`Fast farward`, 
 - `-m`: 由于要创建新的`commit`,所以需要有注释信息
 合并前
-![alt text](img4.png)
+![alt text](images/img4.png)
 合并后
-![alt text](img7.png)
+![alt text](images/img7.png)
 
 ##### 分支管理基本原则
 1. 首先，`master`分支应该是**非常稳定**的，也就是**仅用来发布新版本，平时不能在上面干活**
@@ -359,7 +359,7 @@ $ git log --graph --pretty=oneline --abbrev-commit
 3. 你和你的小伙伴们每个人都在dev分支上干活，每个人都有自己的分支，时不时地往dev分支上合并就可以了。
 
 所以，团队合作的分支看起来就像这样：
-![alt text](img8.png)
+![alt text](images/img8.png)
 
 #### BUG分支
 软件开发中，bug就像家常便饭一样。有了bug就需要修复，在Git中，由于分支是如此的强大，所以，**每个bug都可以通过一个新的临时分支来修复，修复后，合并分支，然后将临时分支删除**。
@@ -518,7 +518,7 @@ pick e0f541f hello.py set exit=1
 正常创建的标签都是本地的,如果要推送到远程,可以使用:
 `git push origin <tag_name>`
 或者一次性推送所有本地标签: `git push origin --tags`
-![alt text](img9.png)
+![alt text](images/img9.png)
 
 要删除已经推送到远程的tag:
 1. `git tag -d <tag_name>`先删除本地
@@ -535,7 +535,7 @@ pick e0f541f hello.py set exit=1
 4. 若自己改的有价值,则可以发送一个`Pull Request`,等待对方接收
 
 以著名的bootstrap项目为例来介绍**fork和clone后仓库间的关系**:
-![alt text](img10.png)
+![alt text](images/img10.png)
 
 #### 八. Gitee
 和GitHub相比，Gitee也提供免费的Git仓库。此外，还集成了代码质量检测、项目演示等功能。对于团队协作开发，Gitee还提供了项目管理、代码托管、文档管理的服务，**5人以下小团队免费**。
@@ -555,7 +555,7 @@ pick e0f541f hello.py set exit=1
 
 ##### 配置`.gitignore`
 在git工作区的根目录下创建一个`.gitignore`文件,可不要忽略的文件名填进去(使用通配符),Git会自动忽略这些文件,这样在`git status`的`Untracked files`中也不会显示这些文件
-![alt text](img11.png)
+![alt text](images/img11.png)
 
 ```.gitignore
 # Python 相关
