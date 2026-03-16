@@ -25,3 +25,4 @@ Creating a new branch is quick and simple.
 
 #### 更新日志
 **2026.2.5**    第一次上传github, 同时试着写个漂亮的README   
+**2026.3.26**   增加note笔记内容, 关于一个电脑git管理多个github的技能

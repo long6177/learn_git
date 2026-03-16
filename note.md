@@ -538,13 +538,13 @@ pick e0f541f hello.py set exit=1
 以著名的bootstrap项目为例来介绍**fork和clone后仓库间的关系**:
 ![alt text](images/img10.png)
 
-#### 八. Gitee
+### 八. Gitee
 和GitHub相比，Gitee也提供免费的Git仓库。此外，还集成了代码质量检测、项目演示等功能。对于团队协作开发，Gitee还提供了项目管理、代码托管、文档管理的服务，**5人以下小团队免费**。
 
-##### 配置Gitee的SSH
+#### 配置Gitee的SSH
 使用Gitee和使用GitHub类似，我们在Gitee上注册账号并登录后，需要先上传自己的SSH公钥。选择右上角用户头像 -> 菜单“设置”，然后在左侧菜单选择“SSH公钥”，填写一个便于识别的标题，然后把用户主目录下的`.ssh/id_rsa.pub`文件的内容粘贴进去：
 
-##### 本地与gitee建立链接
+#### 本地与gitee建立链接
 `git remote add <name> git@gitee.com:liaoxuefeng/learngit.git`
 和使用github类似,不过这里的<name>不能简单的写成`origin`,当一个本地库关联多个远程库时,就不能单单用一个`origin`来代表远程库了,应该用有意义的名字
 比如,这里要和gitee远程联系,可以把`<name>`写成`gitee`
@@ -608,6 +608,11 @@ Use -f if you really want to add them.
     - 可以把`*.py[cod]`这一行删了,但影响较大
     - 可以添加`!.haha.pyc`来把该文件作为例外
 
+**.gitignore的作用范围**
+**作用于该目录和递归的作用到子目录中去**
+若是子目录中已经有`.gitignore`文件,则优先选择子目录的`.gitignore`文件
+
+
 #### 配置命令别名`alias`
 为了简写一些比较长的命令,可以用类似`git config --global alias.st status`的指令进行配置,这样就可以用`git st`来代替`git status`在命令行键入
 这里的`--global`是全局参数,表示该台电脑(该用户)上的所有仓库都生效,**若没有则只对当前仓库有效**
@@ -650,7 +655,7 @@ $ cat .git/config
     remote = origin
     merge = refs/heads/master
 [alias]
-    last = log -1`
+    lg = log --graph --pretty=oneline --decorate --abbrev-commit --all
 ```
 
 #### 搭建Git服务器
@@ -661,3 +666,64 @@ $ cat .git/config
 
 Git有很多图形界面工具，这里我们推荐**SourceTree**，它是由Atlassian开发的免费Git图形界面工具，可以操作任何Git库。
 
+### 十一. 多github账号管理
+用一台电脑的本地git管理两个github账号
+#### 1. 机制说明
+git/github 的各个方面关系:
+|某方面|取决于|
+|:---:|-----|
+|push权限|SSH key决定|
+|commit 作者|git config决定|
+|GitHub显示账户|email是否绑定到GitHub|
+
+**多SSH的核心机制**
+Github通过SSH key识别用户身份, 而本地通过`~/.ssh/config`配置文件实现: **[`config`是一个"路由表"]**
+1. `config`文件给不同github账号SSH连接设置**别名**, 如(`github-long`, `github-JL966`)
+2. 每个别名绑定对应的私钥文件(比如`~/.ssh/id_ed25519`)和主机配置
+3. 推送代码时, **用别名代替默认**的`git@github.com`, 从而让github知道那个SSH key连接对应账号
+
+#### 2. 配置多SSH过程
+
+**(1) 第一步**
+目前已经有了一个github账户的SSH, 现在需要生成第二个
+```bash
+# 生成第二个key，文件名可设为id_ed25519_hnujl（自定义，便于区分）
+ssh-keygen -t ed25519 -C "second@example.com"
+# 运行后终端会提示指定要保存的文件名
+```
+生成完之后, 即可把对应的**公钥(私钥不能泄露)** 放到相应的github账号
+
+**(2) 第二步**
+接下来要配置`~/.ssh/config`, 没有的话要先新建:
+```config
+# 最初账号：long
+Host github-long  # 自定义别名, 以后推送到改github账号就用这个别名
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519  # 第一个账号的私钥文件 (也是全局默认的SSH key)
+    IdentitiesOnly yes  # 强制使用指定的私钥，避免冲突
+
+# 第二个账号：second（新增）
+Host github-hnujl  # 第二个别名
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_hnujl  # 第二个账号的私钥文件
+    IdentitiesOnly yes
+```
+
+配置之后就可以用`ssh -T git@github-long`和`ssh -T git@github-hnujl`分别测试SSH远程连接生效
+
+**注意点**
+git的远程ssh推送会遵循"补充路由规则", 当使用`git@github`时会优先使用全局默认的SSH key, `id_ed25519`这用不加后缀的就是一种全局默认, 其他的全局默认还有`id_rsa`等
+
+
+#### 3. 推送代码
+想要指定不同的github账号进行推送, 只需要**推送时指定对应的SSH别名**
+比如
+```bash
+git remote add origin git@github-long:long6177/learn_git.git
+git push origin master
+```
+
+#### 4. 控制github现实的commit作者账号
+SSH 只负责"连接认证", 而 GitHub 上的提交作者由 Git 的`user.name`和`user.email`决定, `user.email`会被github对应成绑定了该邮箱的github账户
